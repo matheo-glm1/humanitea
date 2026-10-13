@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Humanitea · Boutique solidaire</title>
+<meta name="description" content="Vêtements solidaires Humanitea : chaque achat soutient nos actions au Guatemala.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<header class="nav">
+  <button class="pill-btn is-active" data-open="grid">collection</button>
+  <a href="#" class="logo" aria-label="Humanitea, accueil">
+    <span>Humanitea</span>
+  </a>
+  <button class="pill-btn ghost" data-open="about">Association</button>
+  <button class="cart-btn" data-open="cart" aria-label="Ouvrir le panier">
+    panier <span class="cart-count">0</span>
+  </button>
+</header>
+
+<main class="stage" id="stage">
+  <div class="halo" id="halo"></div>
+  <p class="bg-word" id="bgWord">Guatemala</p>
+  <div class="track" id="track"></div>
+</main>
+
+<!-- Pilule « lecteur » adaptée en fiche produit -->
+<div class="player" id="player">
+  <button class="player-add" id="playerAdd" aria-label="Ajouter au panier">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+  <div class="player-text">
+    <p class="player-title" id="playerTitle">01.T-shirt Quetzal</p>
+    <p class="player-sub" id="playerSub">Humanitea Vol. I</p>
+    <p class="player-price" id="playerPrice">25 €</p>
+  </div>
+  <div class="player-nav">
+    <button id="prev" aria-label="Produit précédent"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button id="next" aria-label="Produit suivant"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+</div>
+
+<button class="grid-toggle" data-open="grid" aria-label="Voir toute la collection">
+  <span></span><span></span><span></span><span></span>
+</button>
+<button class="donate" data-open="about">faire un don</button>
+
+<!-- Vue grille -->
+<section class="overlay grid-view" id="grid" aria-hidden="true">
+  <button class="close" data-close aria-label="Fermer">×</button>
+  <h2>La collection</h2>
+  <div class="grid" id="gridList"></div>
+</section>
+
+<!-- Fiche produit -->
+<section class="overlay product-view" id="product" aria-hidden="true">
+  <button class="close" data-close aria-label="Fermer">×</button>
+  <div class="product-inner">
+    <div class="product-cover" id="pvCover"></div>
+    <div class="product-info">
+      <p class="tag" id="pvNum">01</p>
+      <h2 id="pvName">T-shirt Quetzal</h2>
+      <p class="product-desc" id="pvDesc"></p>
+      <p class="product-impact" id="pvImpact"></p>
+      <p class="label">taille</p>
+      <div class="sizes" id="pvSizes"></div>
+      <div class="product-buy">
+        <span class="product-price" id="pvPrice">25 €</span>
+        <button class="pill-btn big" id="pvAdd">ajouter au panier</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- À propos -->
+<section class="overlay about-view" id="about" aria-hidden="true">
+  <button class="close" data-close aria-label="Fermer">×</button>
+  <div class="about-inner">
+    <p class="tag">Association</p>
+    <h2>Humanitea, des vêtements qui voyagent jusqu'au Guatemala</h2>
+    <p>Humanitea est une association humanitaire qui agit au Guatemala. Chaque vêtement vendu ici finance directement nos projets sur place.</p>
+    <div class="about-cards">
+      <div class="about-card" style="--c:#1f9e6e"><span>01</span><h3>Éducation</h3><p>Fournitures scolaires et soutien aux écoles des villages.</p></div>
+      <div class="about-card" style="--c:#ff7a1a"><span>02</span><h3>Santé</h3><p>Accès à l'eau potable et aux soins de base.</p></div>
+      <div class="about-card" style="--c:#7b5cff"><span>03</span><h3>Artisanat</h3><p>Valorisation du savoir-faire textile des communautés locales.</p></div>
+    </div>
+    <p class="about-note">Tu peux aussi nous soutenir sans rien acheter :</p>
+    <a href="#" class="pill-btn big">faire un don</a>
+  </div>
+</section>
+
+<!-- Panier -->
+<aside class="drawer" id="cart" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>panier</h2>
+    <button class="close" data-close aria-label="Fermer">×</button>
+  </div>
+  <div class="drawer-list" id="cartList"></div>
+  <div class="drawer-foot">
+    <p class="impact-line" id="impactLine"></p>
+    <div class="total"><span>total</span><strong id="cartTotal">0 €</strong></div>
+    <button class="pill-btn big full" id="checkout">commander</button>
+  </div>
+</aside>
+<div class="scrim" id="scrim" data-close></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
