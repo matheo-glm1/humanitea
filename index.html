@@ -213,5 +213,18 @@
 <div class="weave" aria-hidden="true"><div class="weave-inner"></div></div>
 
 <script type="module" src="script.js"></script>
+<script>
+  // Ouvert en double-cliquant sur index.html : le navigateur bloque products.json, on explique quoi faire.
+  if (location.protocol === "file:") {
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="file-warning" role="alert">
+        <h2>Ouvre le site depuis son adresse web</h2>
+        <p>En double-cliquant sur <code>index.html</code>, le navigateur bloque le chargement des produits.</p>
+        <p><strong>En ligne :</strong> <a href="https://stupendous-marshmallow-6a9b2c.netlify.app">stupendous-marshmallow-6a9b2c.netlify.app</a></p>
+        <p><strong>Sur ton ordi :</strong> dans un terminal ouvert dans le dossier « Mon site », lance<br>
+        <code>python -m http.server 5173 --directory humanitea</code><br>puis va sur <a href="http://localhost:5173">localhost:5173</a></p>
+      </div>`);
+  }
+</script>
 </body>
 </html>
