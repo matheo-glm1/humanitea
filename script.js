@@ -3,7 +3,7 @@
 // Le paiement du panier passe par la fonction Netlify netlify/functions/checkout.mjs.
 const HELLOASSO = {
   page: "https://www.helloasso.com/associations/humanitea",
-  don: "https://www.helloasso.com/associations/humanitea/formulaires/9"
+  don: "https://www.helloasso.com/associations/humanitea/formulaires/10"
 };
 
 // ---------- Produits ----------
