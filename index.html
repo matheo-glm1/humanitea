@@ -201,7 +201,19 @@
   <div class="drawer-foot">
     <p class="impact-line" id="impactLine"></p>
     <div class="total"><span>Total</span><strong id="cartTotal">0 €</strong></div>
-    <button class="pill-btn big full" id="checkout">Payer avec HelloAsso</button>
+    <form id="checkoutForm" novalidate>
+      <div class="buyer" id="buyerFields" hidden>
+        <p class="buyer-title">Tes coordonnées pour te remettre la commande</p>
+        <div class="buyer-row">
+          <input name="prenom" placeholder="Prénom" autocomplete="given-name" required maxlength="60" aria-label="Prénom">
+          <input name="nom" placeholder="Nom" autocomplete="family-name" required maxlength="60" aria-label="Nom">
+        </div>
+        <input name="tel" type="tel" placeholder="Téléphone" autocomplete="tel" required maxlength="20" pattern="\+?[0-9 .\(\)\-]{8,20}" aria-label="Téléphone">
+        <input name="email" type="email" placeholder="E-mail" autocomplete="email" required maxlength="120" aria-label="E-mail">
+        <p class="privacy">Utilisées uniquement par Humanitea pour la remise de ta commande.</p>
+      </div>
+      <button class="pill-btn big full" id="checkout" type="submit">Commander</button>
+    </form>
     <p class="secure">🔒 Paiement sécurisé sur la page HelloAsso. L'argent va directement à l'association.</p>
   </div>
 </aside>

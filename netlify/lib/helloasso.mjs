@@ -38,8 +38,15 @@ export async function api(path, { method = "GET", body } = {}) {
     body: body ? JSON.stringify(body) : undefined
   });
   const text = await res.text();
-  if (!res.ok) throw new Error(`HelloAsso ${res.status} : ${text.slice(0, 300)}`);
+  if (!res.ok) throw Object.assign(new Error(`HelloAsso ${res.status} : ${text.slice(0, 300)}`), { status: res.status });
   return text ? JSON.parse(text) : null;
+}
+
+// HelloAsso ne renvoie la commande ("order") d'un paiement que s'il a été accepté
+export async function checkIntent(checkoutIntentId) {
+  const intent = await api(`/organizations/${SLUG}/checkout-intents/${checkoutIntentId}`);
+  const order = intent?.order;
+  return { paid: Boolean(order), orderId: order?.id ?? null };
 }
 
 export const json = (data, status = 200) =>

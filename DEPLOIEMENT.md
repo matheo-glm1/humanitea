@@ -27,6 +27,7 @@ Netlify → le site → **Site configuration → Environment variables** :
 | `HELLOASSO_CLIENT_SECRET` | le clientSecret |
 | `HELLOASSO_ORG_SLUG` | `humanitea` |
 | `HELLOASSO_ENV` | `sandbox` pour tester, `production` pour les vraies ventes |
+| `ADMIN_PASSWORD` | un mot de passe solide, partagé uniquement avec le bureau (page des commandes) |
 
 Après avoir changé une variable : **Deploys → Trigger deploy** pour qu'elle soit prise en compte.
 
@@ -39,8 +40,18 @@ Après avoir changé une variable : **Deploys → Trigger deploy** pour qu'elle 
 
 ## Où voir les commandes ?
 
-Dans l'espace HelloAsso de l'asso. Le détail (articles, tailles, quantités) est envoyé
-avec chaque paiement dans les métadonnées et résumé dans le libellé du paiement.
+Sur **/admin.html** (ex. `https://ton-site.netlify.app/admin.html`), avec le mot de passe `ADMIN_PASSWORD`.
+
+- Chaque commande y apparaît avec nom, prénom, téléphone, e-mail, articles, tailles, total et statut.
+- **En attente** : l'acheteur est parti payer. La page revérifie auprès de HelloAsso à chaque actualisation.
+  Sans paiement au bout de 2 h, la commande passe en **abandonnée**.
+- **À préparer** : le nombre d'articles payés et pas encore remis, par produit et par taille.
+- Coche **Remis** quand la personne a récupéré son t-shirt.
+- **Exporter (Excel)** télécharge un fichier avec une ligne par article.
+
+Les données sont stockées dans Netlify (onglet **Blobs** du site, magasin `commandes`).
+Ce sont des données personnelles : ne partage pas le mot de passe en dehors du bureau,
+et supprime les commandes quand elles ne servent plus (fin de la vente).
 
 ## Modifier les produits
 

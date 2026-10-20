@@ -2,5 +2,15 @@
   publish = "."
   functions = "netlify/functions"
 
+[build.environment]
+  NODE_VERSION = "22"
+
 [functions]
   node_bundler = "esbuild"
+
+# La page admin ne doit pas apparaître dans Google
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

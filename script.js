@@ -299,26 +299,39 @@ $("#cartList").addEventListener("click", e => {
   if (l.qty <= 0) cart.splice(+b.dataset.q, 1);
   saveCart(); renderCart();
 });
-// Paiement : la fonction Netlify recalcule le montant à partir de products.json,
-// crée le paiement chez HelloAsso et renvoie l'adresse de la page de paiement.
-$("#checkout").onclick = async () => {
-  const btn = $("#checkout");
+// Paiement : 1er clic → on demande les coordonnées, 2e clic → la fonction Netlify enregistre la commande,
+// recalcule le montant à partir de products.json et renvoie l'adresse de la page de paiement HelloAsso.
+$("#checkoutForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.currentTarget, btn = $("#checkout");
+  if ($("#buyerFields").hidden) {
+    $("#buyerFields").hidden = false;
+    btn.textContent = "Payer avec HelloAsso";
+    form.elements.prenom.focus();
+    return;
+  }
+  if (!form.reportValidity()) return;
+
+  const client = Object.fromEntries(["prenom", "nom", "tel", "email"].map(k => [k, form.elements[k].value.trim()]));
   btn.disabled = true; btn.textContent = "Connexion à HelloAsso…";
   try {
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: cart.map(({ id, size, qty }) => ({ id, size, qty })) })
+      body: JSON.stringify({ client, items: cart.map(({ id, size, qty }) => ({ id, size, qty })) })
     });
     const data = await res.json().catch(() => ({}));
+    if (res.status === 400 && data.error) { toast(data.error); throw null; }
     if (!res.ok || !data.redirectUrl) throw new Error(data.error || "Paiement indisponible");
     location.href = data.redirectUrl; // page de paiement HelloAsso
   } catch (err) {
-    const local = ["localhost", "127.0.0.1"].includes(location.hostname);
-    toast(local ? "Le paiement marche une fois le site en ligne sur Netlify 🙂" : "Oups, le paiement n'a pas pu démarrer. Réessaie dans un instant.");
+    if (err) {
+      const local = ["localhost", "127.0.0.1"].includes(location.hostname);
+      toast(local ? "Le paiement marche une fois le site en ligne sur Netlify 🙂" : "Oups, le paiement n'a pas pu démarrer. Réessaie dans un instant.");
+    }
     btn.disabled = false; btn.textContent = "Payer avec HelloAsso";
   }
-};
+});
 
 // Retour depuis HelloAsso : on vérifie la commande côté serveur (les paramètres d'URL ne suffisent pas)
 async function handlePaymentReturn() {

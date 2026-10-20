@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Commandes · Humanitea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #2bb07f; --ink: #141414; --paper: #fff8ec; --muted: #6b6b6b; --line: #e6dccb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--bg); min-height: 100vh; padding: 24px 16px 48px; }
+  h1, h2 { font-family: "Bagel Fat One", system-ui, sans-serif; font-weight: 400; }
+  button, input, select { font: inherit; color: inherit; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  .login { max-width: 380px; margin: 12vh auto 0; background: var(--paper); border: 2px solid var(--ink); border-radius: 20px; padding: 28px; box-shadow: 8px 8px 0 rgba(20,20,20,.2); }
+  .login h1 { font-size: 34px; margin-bottom: 6px; }
+  .login p { font-size: 14px; color: var(--muted); margin-bottom: 18px; }
+  .login input { width: 100%; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 12px; margin-bottom: 12px; background: #fff; }
+  .error { color: #c62828; font-size: 14px; min-height: 20px; margin-bottom: 8px; }
+
+  .btn { border: 2px solid var(--ink); border-radius: 999px; padding: 8px 18px; font-weight: 700; background: var(--paper); cursor: pointer; }
+  .btn.dark { background: var(--ink); color: var(--paper); }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  header h1 { font-size: clamp(30px, 5vw, 46px); }
+  header .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 14px 16px; }
+  .stat span { display: block; font-size: 13px; color: var(--muted); font-weight: 500; }
+  .stat strong { font-family: "Bagel Fat One", system-ui, sans-serif; font-weight: 400; font-size: 30px; }
+
+  .card { background: var(--paper); border: 2px solid var(--ink); border-radius: 20px; padding: 18px; margin-bottom: 20px; }
+  .card h2 { font-size: 24px; margin-bottom: 4px; }
+  .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .prep { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .prep div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; }
+  .prep b { display: block; margin-bottom: 4px; }
+  .prep small { font-size: 14px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .toolbar input { flex: 1; min-width: 180px; padding: 8px 12px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filters button { border: 2px solid var(--ink); background: #fff; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .filters button.on { background: var(--ink); color: var(--paper); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 8px; border-bottom: 2px solid var(--ink); }
+  td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.num { text-align: right; white-space: nowrap; font-weight: 700; }
+  td a { color: inherit; }
+  .items { list-style: none; display: grid; gap: 2px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .badge.payée { background: #c8f2dc; color: #0b6b40; }
+  .badge.en-attente { background: #fff0c2; color: #8a5b00; }
+  .badge.abandonnée { background: #eee; color: #777; }
+  input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--ink); cursor: pointer; }
+  .empty { text-align: center; color: var(--muted); padding: 28px 0; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <form class="login" id="login">
+    <h1>Commandes</h1>
+    <p>Espace réservé au bureau Humanitea.</p>
+    <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password" required>
+    <p class="error" id="loginError"></p>
+    <button class="btn dark" type="submit">Se connecter</button>
+  </form>
+
+  <main id="app" hidden>
+    <header>
+      <h1>Commandes Humanitea</h1>
+      <div class="actions">
+        <button class="btn" id="refresh">Actualiser</button>
+        <button class="btn" id="export">Exporter (Excel)</button>
+        <button class="btn" id="logout">Se déconnecter</button>
+      </div>
+    </header>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="card">
+      <h2>À préparer</h2>
+      <p class="hint">Articles payés mais pas encore remis, par produit et par taille.</p>
+      <div class="prep" id="prep"></div>
+    </section>
+
+    <section class="card">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Rechercher un nom, un téléphone, un e-mail…">
+        <div class="filters" id="filters">
+          <button data-f="payée" class="on">Payées</button>
+          <button data-f="aremettre">À remettre</button>
+          <button data-f="en attente">En attente</button>
+          <button data-f="abandonnée">Abandonnées</button>
+          <button data-f="toutes">Toutes</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>E-mail</th><th>Articles</th><th>Total</th><th>Statut</th><th>Remis</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="empty" hidden>Aucune commande ici pour l'instant.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+  const $ = s => document.querySelector(s);
+  const euro = n => n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
+  const dateFr = iso => new Date(iso).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+  let password = "", orders = [], filter = "payée";
+
+  try { password = sessionStorage.getItem("humanitea-admin") || ""; } catch (e) {}
+
+  async function call(method = "GET", body) {
+    const res = await fetch("/api/commandes", {
+      method,
+      headers: { Authorization: `Bearer ${password}`, ...(body ? { "Content-Type": "application/json" } : {}) },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (res.status === 401) throw Object.assign(new Error("Mot de passe incorrect"), { auth: true });
+    if (!res.ok) throw new Error("Le serveur ne répond pas, réessaie dans un instant.");
+    return res.json();
+  }
+
+  async function load() {
+    $("#refresh").disabled = true;
+    try {
+      orders = await call();
+      $("#login").hidden = true; $("#app").hidden = false;
+      render();
+    } catch (err) {
+      if (err.auth) logout(err.message); else alert(err.message);
+    } finally { $("#refresh").disabled = false; }
+  }
+
+  function logout(msg = "") {
+    password = "";
+    try { sessionStorage.removeItem("humanitea-admin"); } catch (e) {}
+    $("#app").hidden = true; $("#login").hidden = false;
+    $("#loginError").textContent = msg;
+  }
+
+  function visible() {
+    const q = $("#search").value.trim().toLowerCase();
+    return orders.filter(o => {
+      const okFilter = filter === "toutes" ? true
+        : filter === "aremettre" ? o.statut === "payée" && !o.remis
+        : o.statut === filter;
+      const hay = [o.client.nom, o.client.prenom, o.client.tel, o.client.email, o.commandeHelloAsso].join(" ").toLowerCase();
+      return okFilter && (!q || hay.includes(q));
+    });
+  }
+
+  function render() {
+    const paid = orders.filter(o => o.statut === "payée");
+    const articles = paid.reduce((s, o) => s + o.lignes.reduce((t, l) => t + l.quantite, 0), 0);
+    const stats = [
+      ["Commandes payées", paid.length],
+      ["Articles vendus", articles],
+      ["Total encaissé", euro(paid.reduce((s, o) => s + o.total, 0))],
+      ["À remettre", paid.filter(o => !o.remis).length]
+    ];
+    $("#stats").replaceChildren(...stats.map(([label, value]) => {
+      const d = document.createElement("div"); d.className = "stat";
+      const s = document.createElement("span"); s.textContent = label;
+      const b = document.createElement("strong"); b.textContent = value;
+      d.append(s, b); return d;
+    }));
+
+    // Résumé par produit et taille (payé, pas encore remis)
+    const prep = {};
+    paid.filter(o => !o.remis).forEach(o => o.lignes.forEach(l => {
+      prep[l.nom] ??= {};
+      prep[l.nom][l.taille] = (prep[l.nom][l.taille] || 0) + l.quantite;
+    }));
+    const prepEntries = Object.entries(prep);
+    $("#prep").replaceChildren(...(prepEntries.length ? prepEntries.map(([nom, tailles]) => {
+      const d = document.createElement("div");
+      const b = document.createElement("b"); b.textContent = nom;
+      const s = document.createElement("small");
+      s.textContent = Object.entries(tailles).map(([t, q]) => `${t} × ${q}`).join(" · ");
+      d.append(b, s); return d;
+    }) : [Object.assign(document.createElement("p"), { className: "hint", textContent: "Rien à préparer 🎉" })]));
+
+    const list = visible();
+    $("#empty").hidden = list.length > 0;
+    $("#rows").replaceChildren(...list.map(o => {
+      const tr = document.createElement("tr");
+      const td = (text, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = text; tr.append(c); return c; };
+      td(dateFr(o.date));
+      td(o.client.nom); td(o.client.prenom);
+      const tel = td(""); const a = document.createElement("a"); a.href = `tel:${o.client.tel.replace(/[^\d+]/g, "")}`; a.textContent = o.client.tel; tel.append(a);
+      const mail = td(""); const m = document.createElement("a"); m.href = `mailto:${o.client.email}`; m.textContent = o.client.email; mail.append(m);
+      const items = td(""); const ul = document.createElement("ul"); ul.className = "items";
+      o.lignes.forEach(l => { const li = document.createElement("li"); li.textContent = `${l.quantite} × ${l.nom} — ${l.taille}`; ul.append(li); });
+      items.append(ul);
+      td(euro(o.total), "num");
+      const st = td(""); const badge = document.createElement("span");
+      badge.className = `badge ${o.statut.replace(" ", "-")}`; badge.textContent = o.statut; st.append(badge);
+      const rem = td("");
+      if (o.statut === "payée") {
+        const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = o.remis;
+        cb.setAttribute("aria-label", `Commande de ${o.client.prenom} ${o.client.nom} remise`);
+        cb.onchange = async () => {
+          cb.disabled = true;
+          try { Object.assign(o, await call("POST", { id: o.id, remis: cb.checked })); render(); }
+          catch (err) { cb.checked = !cb.checked; alert(err.message); }
+          finally { cb.disabled = false; }
+        };
+        rem.append(cb);
+      }
+      return tr;
+    }));
+  }
+
+  // Export : une ligne par article, séparateur « ; » pour qu'Excel l'ouvre directement
+  function exportCsv() {
+    const safe = v => { let s = String(v ?? ""); if (/^[=+\-@]/.test(s) && !/^\+[\d .()-]+$/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
+    const head = ["Date", "Statut", "Remis", "Nom", "Prénom", "Téléphone", "E-mail", "Produit", "Taille", "Quantité", "Prix unitaire", "Total commande", "N° HelloAsso"];
+    const rows = visible().flatMap(o => o.lignes.map(l => [
+      dateFr(o.date), o.statut, o.remis ? "oui" : "non", o.client.nom, o.client.prenom, o.client.tel, o.client.email,
+      l.nom, l.taille, l.quantite, String(l.prixUnitaire).replace(".", ","), String(o.total).replace(".", ","), o.commandeHelloAsso ?? ""
+    ]));
+    const csv = "﻿" + [head, ...rows].map(r => r.map(safe).join(";")).join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `commandes-humanitea-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  $("#login").addEventListener("submit", e => {
+    e.preventDefault();
+    password = $("#password").value;
+    try { sessionStorage.setItem("humanitea-admin", password); } catch (err) {}
+    $("#loginError").textContent = "";
+    load();
+  });
+  $("#refresh").onclick = load;
+  $("#export").onclick = exportCsv;
+  $("#logout").onclick = () => logout();
+  $("#search").oninput = render;
+  $("#filters").onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    filter = b.dataset.f;
+    [...$("#filters").children].forEach(x => x.classList.toggle("on", x === b));
+    render();
+  };
+
+  if (password) load();
+</script>
+</body>
+</html>
