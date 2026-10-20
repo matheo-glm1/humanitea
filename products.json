@@ -88,7 +88,7 @@
     "place": "Semuc Champey",
     "stamp": "SEMUC",
     "type": "socks",
-    "images": ["Bureau_blanc.jpg", "Bureau_blanc2.jpg", "bureau_blanc3.jpg","Bureau_blanc4.jpg"],
+    "images": ["Bureau_blanc.jpg", "bureau_blanc2.jpg", "bureau_blanc3.jpg","Bureau_blanc4.jpg"],
     "cover": "#bfe3ff",
     "circle": "#6fb8ff",
     "garment": "#2bb07f",
